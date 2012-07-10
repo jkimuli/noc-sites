@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCWO3yzsEwoTWJKY9lJpx5yeFN9efBLgio&sensor=false">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="/static/js/jquery_gmap.js" ></script>
+    <script type="text/javascript">
+      $(function(){
+        
+        var lat = $("#lat").html();
+        var lng = $("#lng").html();
+        var site = $("#site").html();
+        
+        var myLatlng = new google.maps.LatLng(lat,lng);
+        var myOptions = {
+          center: myLatlng,
+          zoom: 8,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+            myOptions);
+        
+        var marker = new google.maps.Marker({
+       position: myLatlng,
+       map: map,
+       title:site
+        })
+        
+      });
+      
+      
+    </script>
+  </head>
+  <body>
+    <p> Site Co-ordinates:</p>
+    
+    <table>
+        <tr>
+            <td id="site">{{site}}</td>
+            <td id="lat">{{lat}}</td>
+            <td id ="lng">{{lng}}</td>
+        </tr>
+    </table>
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</html>

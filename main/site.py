@@ -24,14 +24,14 @@ class Site(db.Model):
     
     #distance parameters to be calculated in a custom model save method
     
-    dis_kla = db.FloatProperty()
-    dis_jja = db.FloatProperty()
-    dis_msk = db.FloatProperty()
-    dis_mbr = db.FloatProperty()
-    dis_mbl = db.FloatProperty()
-    dis_glu = db.FloatProperty()
-    dis_hom = db.FloatProperty()
-    dis_fort = db.FloatProperty()
+    dis_kla = db.IntegerProperty()
+    dis_jja = db.IntegerProperty()
+    dis_msk = db.IntegerProperty()
+    dis_mbr = db.IntegerProperty()
+    dis_mbl = db.IntegerProperty()
+    dis_glu = db.IntegerProperty()
+    dis_hom = db.IntegerProperty()
+    dis_fort = db.IntegerProperty()
     
  
         

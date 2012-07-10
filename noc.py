@@ -1,7 +1,9 @@
 import webapp2
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import db
 import jinja2
 import os
+import urllib2
 from main.users import  User
 from main.site import  Site
 from main.regions import Region
@@ -52,10 +54,14 @@ class Handler(webapp2.RequestHandler):
         
 class MainPage(Handler):
     def get(self):
-        self.render('index.html')
         
-    def post(self):
-        site = self.request.get('site')
+        #get regions saved in database
+        
+        regions = Region.all()
+        
+        self.render('index.html',regions = regions)
+        
+    
         
 
 class SignUpHandler(Handler):
@@ -129,7 +135,7 @@ class SignUpHandler(Handler):
 class WelcomeHandler(Handler):
     def get(self):
         if self.user:
-            self.render('welcome.html',username = self.user.username)
+            self.render('index.html',username = self.user.username)
         else:
             self.redirect('/signup')
             
@@ -149,7 +155,7 @@ class LoginHandler(Handler):
             self.login(u)
             #refer = self.request.get('referer')
             #val = self.request.cookies.get('page')
-            self.redirect('/post_region')
+            self.redirect('/')
         else:
             msg = "Invalid login"
             self.render('login-form.html',error_msg=msg)
@@ -192,28 +198,32 @@ class SiteHandler(Handler):
     def post(self):
         site_id = self.request.get('site_id')
         location = self.request.get('location')
-        lat = float(self.request.get('latitude'))
-        lng = float(self.request.get('longitude'))
+        latitude = self.request.get('latitude')
+        longitude = self.request.get('longitude')
         region = self.request.get('region')
         
-        if site_id and location and lat and lng and region:
+        if site_id and location and latitude and longitude and region:
             #try to save site into database
             
             #save region
             
-            region = Region(name=region)
-            region.put()
+            key_name = "region_"+ region
+            region = Region.get_or_insert(key_name,name=region)
             
-            dis_kla = distance_on_unit_sphere(lat,lng,kla_lat,kla_long) * 6373
-            dis_jja = distance_on_unit_sphere(lat,lng,jja_lat,jja_long) * 6373
-            dis_msk = distance_on_unit_sphere(lat,lng,msk_lat,msk_long) * 6373
-            dis_mbr= distance_on_unit_sphere(lat,lng,mbr_lat,mbr_long) * 6373
-            dis_mbl = distance_on_unit_sphere(lat,lng,mbl_lat,mbl_long) * 6373
-            dis_glu = distance_on_unit_sphere(lat,lng,gul_lat,gul_long) * 6373
-            dis_hom = distance_on_unit_sphere(lat,lng,hom_lat,hom_long) * 6373
-            dis_fort = distance_on_unit_sphere(lat,lng,fort_lat,fort_long) * 6373
-                
-            site = Site(site_id=site_id,
+            lat = float(latitude)
+            lng = float(longitude)
+            
+            dis_kla = int(distance_on_unit_sphere(lat,lng,kla_lat,kla_long) * 6373)
+            dis_jja = int(distance_on_unit_sphere(lat,lng,jja_lat,jja_long) * 6373)
+            dis_msk = int(distance_on_unit_sphere(lat,lng,msk_lat,msk_long) * 6373)
+            dis_mbr= int(distance_on_unit_sphere(lat,lng,mbr_lat,mbr_long) * 6373)
+            dis_mbl = int(distance_on_unit_sphere(lat,lng,mbl_lat,mbl_long) * 6373)
+            dis_glu = int(distance_on_unit_sphere(lat,lng,gul_lat,gul_long) * 6373)
+            dis_hom = int(distance_on_unit_sphere(lat,lng,hom_lat,hom_long) * 6373)
+            dis_fort = int(distance_on_unit_sphere(lat,lng,fort_lat,fort_long) * 6373)
+            
+            keyname = "site_"+ site_id   
+            site = Site.get_or_insert(keyname,site_id=site_id,
                         location=location,
                         lat=lat,
                         lng=lng,
@@ -228,22 +238,51 @@ class SiteHandler(Handler):
                         dis_fort=dis_fort,
                         )
             
-            site.put()
             
+            
+            self.redirect('/')
             
             
             
         else:
-            error = "Unable to save the site"
-            self.render('site_form.html',error=error)
+            error = "Unable to save the site - Please input all required values"
+            self.render('site_form.html',site_id=site_id,lat=latitude,lng=longitude,location=location,region=region,error=error)
             
 class SearchHandler(Handler):
     def post(self):
         id = self.request.get('site')
         
-            
+        #search for site by name
+        
+        site = Site.all().filter("site_id", id).get()
+        
+        self.render('search.html',site=site)
+        
+    def get(self):
+        self.render('search.html')
+        
+class RegionSearchHandler(Handler):
+    def get(self,q):
+        region = Region.all().filter('name',q).get()
+        
+        #return all sites in given region
+        
+        sites = Site.all().filter('region',region)
+        
+        self.render('region_search.html',sites = sites)
+        
 
-application = webapp2.WSGIApplication([('/', MainPage),('/login',LoginHandler),('/signup',SignUpHandler),('/logout',LogoutHandler),('/post_region',RegionHandler),('/post_site',SiteHandler),('/welcome',WelcomeHandler),('/search',SearchHandler)], debug=True)
+class MapHandler(Handler):
+    def get(self,q):
+        site = Site.all().filter('site_id',q).get()
+        
+        lat = site.lat
+        lng = site.lng
+        
+        self.render('map.html',lat=lat,lng=lng,site=q)
+        
+
+application = webapp2.WSGIApplication([('/', MainPage),('/login',LoginHandler),('/signup',SignUpHandler),('/logout',LogoutHandler),('/post_region',RegionHandler),('/post_site',SiteHandler),('/welcome',WelcomeHandler),('/search',SearchHandler),('/search_region/(\w+)',RegionSearchHandler),('/map/(\w+)',MapHandler)], debug=True)
 
 
 def main():

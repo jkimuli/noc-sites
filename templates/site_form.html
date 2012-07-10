@@ -37,9 +37,12 @@
           
           <div class="nav-collapse">
             <ul class="nav pull-right">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li ><a href="/">Home</a></li>
+              <li><a href="/login">Login</a></li>
+              
+              <li><a href="/logout">Logout</a></li>
+              
+              <li class="active"><a href="/post_site">Submit Site</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -52,10 +55,17 @@
         <form class="form-horizontal" method="post" action=" ">
 		  <fieldset>
 		    <legend>Enter a New Site</legend>
+		    
 		    <div class="control-group">
+		      
+		      <div class="controls" style="color:red">
+			{{error}}
+		      </div>
+		      </br>
+		      
 		      <label class="control-label" for="site_id">Site ID</label>
 		      <div class="controls">
-		        <input type="text" class="input-xlarge" id="site_id" name="site_id">
+		        <input type="text" class="input-xlarge" id="site_id" name="site_id" value="{{site_id}}">
 		        <p class="help-block">Please specify site id</p>
 		       	        
 		        
@@ -63,7 +73,7 @@
 		      
 		      <label class="control-label" for="location">Location</label>
 		      <div class="controls">
-		        <input type="text" class="input-xlarge" id="location" name="location">
+		        <input type="text" class="input-xlarge" id="location" name="location" value="{{location}}">
 		        <p class="help-block">Please specify site name</p>
 		       	        
 		        
@@ -71,7 +81,7 @@
 		      
 		      <label class="control-label" for="lat">Latitude</label>
 		      <div class="controls">
-		        <input type="text" class="input-xlarge" id="lat" name="latitude">
+		        <input type="text" class="input-xlarge" id="lat" name="latitude" value="{{lat}}">
 		        <p class="help-block">Please specify site latitude</p>
 		       	        
 		        
@@ -79,7 +89,7 @@
 		      
 		      <label class="control-label" for="longitude">Longitude</label>
 		      <div class="controls">
-		        <input type="text" class="input-xlarge" id="longitude" name="longitude">
+		        <input type="text" class="input-xlarge" id="longitude" name="longitude" value="{{lng}}">
 		        <p class="help-block">Please specify site longitude</p>
 		       	        
 		        
@@ -87,8 +97,8 @@
 		      
 		      <label class="control-label" for="region">Region</label>
 		      <div class="controls">
-		        <input type="text" class="select" id="region" name="region">
-		        <p class="help-block">Please specify region where site is</p>
+		        <input type="text" class="select" id="region" name="region" value="{{region}}">
+		        <p class="help-block">Either Kampala,Gulu,Mbarara,Hoima,Fort Portal,Masaka,Jinja,Mbale</p>
 		       	        
 		        
 		      </div>
@@ -98,11 +108,17 @@
 		      
 		    </div>
 		    
+		    
+		    
 		  </fieldset>
 		  
 		  <div class="controls">
 		      <input class="btn" type="submit"   value="Submit">
 		      </div>
+		  
+		  
+		    
+		  
 		</form>
         </div>
         

@@ -38,7 +38,7 @@
             <ul class="nav pull-right">
               <li class="active"><a href="#">Home</a></li>
               <li><a href="/login">Login</a></li>
-              <li><a href="/signup">Register</a></li>
+              
               <li><a href="/logout">Logout</a></li>
               
               <li><a href="/post_site">Submit Site</a></li>
@@ -54,12 +54,12 @@
       <div class = "row-fluid">
         <div class = "span10">
               <h3> Please enter a site to search for:</h3>
-        	  <form class="well form-search" method="post" action=" ">
+        	  <form class="well form-search" method="post" action="/search ">
 			  <input type="text" class="input-medium search-query" name="site">
-			  <input type="submit" class="btn">Search</button>
-			  </form>
+			  <button type="submit" class="btn">Search</button>
+		  </form>
 			  
-			  <div id="search-results"></div>
+			  
         </div>
         
         <div class = "span2">
@@ -67,14 +67,11 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Filter</li>
-              <li class="active"><a href="#">Kampala</a></li>
-              <li><a href="#">Jinja</a></li>
-              <li><a href="#">Mbarara</a></li>
-              <li><a href="#">Masaka</a></li>
-              <li><a href="#">Mbale</a></li>
-              <li><a href="#">Fort Portal</a></li>
-              <li><a href="#">Hoima</a></li>
-              <li><a href="#">Gulu</a></li>
+              {%if regions%}
+	        {%for region in regions%}
+		<li><a href="/search_region/{{region.name}}">{{region.name}}</a></li>
+		{%endfor%}
+	      {%endif%}
               
             </ul>
           </div><!--/.well -->
