@@ -279,7 +279,7 @@ class MapHandler(Handler):
         lat = site.lat
         lng = site.lng
         
-        self.render('map.html',lat=lat,lng=lng,site=q)
+        self.render('map.html',lat=lat,lng=lng,site=site)
         
 
 application = webapp2.WSGIApplication([('/', MainPage),('/login',LoginHandler),('/signup',SignUpHandler),('/logout',LogoutHandler),('/post_region',RegionHandler),('/post_site',SiteHandler),('/welcome',WelcomeHandler),('/search',SearchHandler),('/search_region/(\w+)',RegionSearchHandler),('/map/(\w+)',MapHandler)], debug=True)

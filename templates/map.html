@@ -4,9 +4,24 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <style type="text/css">
       html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0 }
-      #map_canvas { height: 100% }
+      body { height: 100%; margin: 0; padding: 0;padding-top:60px }
+      
+      .hero-unit{
+        margin-left:30px;
+        margin-right:30px
+      }
+
+      #map_canvas {
+        width:95%;
+        height:70%;
+        margin-left:30px;
+        margin-top:10px;
+        margin-right:30px;
+        margin-bottom:0px
+        }
     </style>
+    
+    <link href="/static/css/bootstrap.css" rel="stylesheet"/>
     <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCWO3yzsEwoTWJKY9lJpx5yeFN9efBLgio&sensor=false">
     </script>
@@ -18,6 +33,9 @@
         var lat = $("#lat").html();
         var lng = $("#lng").html();
         var site = $("#site").html();
+        var name = $("#name").html();
+        
+        var content =  name + '\n' +  site;
         
         var myLatlng = new google.maps.LatLng(lat,lng);
         var myOptions = {
@@ -32,7 +50,15 @@
        position: myLatlng,
        map: map,
        title:site
-        })
+        });
+        
+        var infowindow = new google.maps.InfoWindow({
+           content: content
+        });
+        
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map,marker);
+        });
         
       });
       
@@ -40,15 +66,53 @@
     </script>
   </head>
   <body>
-    <p> Site Co-ordinates:</p>
+        <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          
+          <div class="nav-collapse">
+            <ul class="nav pull-right">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="/login">Login</a></li>
+              
+              <li><a href="/logout">Logout</a></li>
+              
+              <li><a href="/post_site">Submit Site</a></li>
+              
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
     
-    <table>
+    
+        <div class="hero-unit">
+        <p> Site Co-ordinates:</p>
+        <table>
         <tr>
-            <td id="site">{{site}}</td>
+            <td id="site">{{site.site_id}}</td>
             <td id="lat">{{lat}}</td>
             <td id ="lng">{{lng}}</td>
         </tr>
-    </table>
-    <div id="map_canvas" style="width:100%; height:100%"></div>
+        <tr>
+            <td id="name">{{site.location}}</td>
+        </tr>
+        </table>
+            </div>
+        
+         
+        
+    
+    
+        <div id="map_canvas" ></div>
+    
+ 
+     
+ 
   </body>
 </html>
